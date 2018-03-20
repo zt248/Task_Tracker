@@ -23,7 +23,6 @@
 </form:form>
 
 
-<a href="/">Home</a>
 <br>
 <a href="/managerPage">Back</a>
 <br>

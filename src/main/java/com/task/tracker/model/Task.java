@@ -27,7 +27,7 @@ public class Task implements Serializable{
     @ManyToOne(fetch = FetchType.EAGER)
     User user;
 
-    @OneToMany(mappedBy = "task", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "task", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     Set<Comment> comments;
 
 

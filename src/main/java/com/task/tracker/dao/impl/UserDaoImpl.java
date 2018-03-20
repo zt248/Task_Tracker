@@ -42,6 +42,21 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    public List<User> getDeveloperLastFist(String firstName, String lastName) throws DaoException {
+        Session session = this.sessionFactory.getCurrentSession();
+        List<User> developerList = session.createQuery("from User where first_name like '%" + firstName + "%' and last_name like '" + lastName + "'  ").list();
+        return developerList;
+//        return null;
+    }
+
+    @Override
+    public List<User> developerGetAllProject(String email) throws DaoException {
+        Session session = this.sessionFactory.getCurrentSession();
+        List<User> developerList = session.createQuery("from User where email = '" + email + "' ").list();
+        return developerList;
+    }
+
+    @Override
     public User getById(Long id) throws DaoException {
 
         Session session = this.sessionFactory.getCurrentSession();

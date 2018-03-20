@@ -15,6 +15,9 @@
 </security:authorize>
 <br />
 <security:authorize access="isAuthenticated()">
+    <a href="/developer/developerGetAllProject">developerGetAllProject</a>
+<br>
+<br>
     <a href="/developerCreate">developerCreate</a>
     <a href="/">Home</a> | <a href="/logoutNew">Logout</a>
 </security:authorize>

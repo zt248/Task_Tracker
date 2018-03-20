@@ -1,9 +1,7 @@
 package com.task.tracker.controller;
 
-import com.task.tracker.dao.DaoException;
-import com.task.tracker.dao.ProjectDao;
-import com.task.tracker.dao.TaskDao;
-import com.task.tracker.dao.UserDao;
+import com.task.tracker.dao.*;
+import com.task.tracker.model.Comment;
 import com.task.tracker.model.Project;
 import com.task.tracker.model.Task;
 import com.task.tracker.model.User;
@@ -12,9 +10,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.security.Principal;
@@ -36,14 +32,17 @@ public class ManagerController {
     @Autowired
     private UserDao userDao;
 
-    //---------------- ProjectController
-    //read
-    @RequestMapping(value = {"manager/projectPage"})
-    public String projectPage(Model model, Principal principal) throws DaoException {
-        model.addAttribute("projectList", this.projectDao.getAll());
+    @Autowired
+    private CommentDao commentDao;
 
-        return "views/manager/project/managerProjectPage";
-    }
+    //---------------- ProjectController
+
+    //read
+//    @RequestMapping(value = {"manager/projectPage"})
+//    public String projectPage(Model model, Principal principal) throws DaoException {
+//        model.addAttribute("projectList", this.projectDao.getAll());
+//        return "views/manager/project/managerProjectPage";
+//    }
 
     //Create
     @RequestMapping(value = {"/manager/projectNew"})
@@ -55,7 +54,7 @@ public class ManagerController {
     @RequestMapping(value = {"/manager/projectCreate"})
     public String projectCreate(@ModelAttribute("project") Project project) throws DaoException {
         this.projectDao.add(project);
-        return "redirect:/manager/projectPage";
+        return "redirect:/managerPage";
     }
 
 
@@ -64,21 +63,47 @@ public class ManagerController {
     public String projectGetById(@PathVariable("id") Long id, Model model) throws DaoException {
         Project project = this.projectDao.getById(id);
         model.addAttribute("projectById", project);
-        List<Task> taskList = taskDao.getAll();
+        List<Task> taskList = taskDao.getProjectTask(project.getId());
         model.addAttribute("taskList", taskList);
         return "views/manager/project/managerProjectGetById";
     }
 
+
+    @RequestMapping(value = {"manager/TaskGetBy/{idTask}"})
+    public String taskGetBy(@PathVariable("idTask") Long idTask, Model model) throws DaoException {
+        Comment comment = new Comment();
+        model.addAttribute("comment", comment);
+        Task task = this.taskDao.getById(idTask);
+        model.addAttribute("task", task);
+        return "views/manager/task/managerTaskGetById";
+    }
+
+    @RequestMapping(value = {"manager/Task{idTask}CreateComment"})
+    public String taskCreateComment(@PathVariable("idTask") Long idTask, Model model) throws DaoException {
+        Task task  = this.taskDao.getById(idTask);
+        model.addAttribute("task", task);
+        Comment comment = new Comment();
+        model.addAttribute("comment", comment);
+        return "views/manager/comment/managerCreateComment";
+    }
+
+    @RequestMapping(value = {"manager/Task{idTask}AddComment"})
+    public String taskAddComment(@PathVariable("idTask") Long idTask, @ModelAttribute("comment") Comment comment) throws DaoException {
+        Task task = this.taskDao.getById(idTask);
+        comment.setUser(task.getUser());
+        comment.setTask(task);
+        this.commentDao.add(comment);
+        return "redirect:/manager/TaskGetBy/" + idTask + "";
+    }
 
     //update
 
     //delete
     @RequestMapping(value = {"/manager/projectDelete{id}"})
     public String projectDeleteById(@PathVariable("id") Long id) throws DaoException {
-        Project project = new Project();
-        project.setId(id);
+        Project project = projectDao.getById(id);
         this.projectDao.remove(project);
-        return "redirect:/manager/projectPage";
+        return "redirect:/managerPage";
     }
 
 
@@ -115,8 +140,7 @@ public class ManagerController {
     //delete
     @RequestMapping(value = {"manager/taskDelete{id}"})
     public String taskDeleteById(@PathVariable("id") Long id) throws DaoException {
-        Task task = new Task();
-        task.setId(id);
+        Task task = this.taskDao.getById(id);
         this.taskDao.remove(task);
         return "redirect:/manager/taskPage";
     }
@@ -126,12 +150,8 @@ public class ManagerController {
     //read
     @RequestMapping(value = {"manager/developerPage"})
     public String developerPage(Model model) throws DaoException, IOException {
-//        ObjectMapper objectMapper = new ObjectMapper();
-
         List<User> developers = this.userDao.getDeveloper();
         model.addAttribute("developers", developers);
-
-//        model.addAttribute("developers", objectMapper.writeValueAsString(developers));
         return "views/manager/user/managerDeveloperPage";
     }
 
@@ -156,10 +176,10 @@ public class ManagerController {
     }
 
 
-    @RequestMapping(value = {"manager/taskAddDeveloper/{id}/{id}"})
-    public String taskAddDeveloper(@PathVariable("id") Long taskId, @PathVariable("id") Long projectId, Model model) throws DaoException {
-        Task task =  this.taskDao.getById(taskId);
-        model.addAttribute("task",task);
+    @RequestMapping(value = {"manager/taskAddDeveloper/{taskId}/{projectId}"})
+    public String taskAddDeveloper(@PathVariable("taskId") Long taskId, @PathVariable("projectId") Long projectId, Model model) throws DaoException {
+        Task task = this.taskDao.getById(taskId);
+        model.addAttribute("task", task);
         Project project = this.projectDao.getById(projectId);
         Set<User> userSet = project.getUsers();
         model.addAttribute("userSetProject", userSet);
@@ -170,11 +190,70 @@ public class ManagerController {
     public String developerUpTask(@PathVariable("id") Long developerId, @PathVariable("task") Long taskId, @ModelAttribute("developer") User user) throws DaoException {
         user = this.userDao.getById(developerId);
         Task task = this.taskDao.getById(taskId);
+        task.setUser(user);
         Set<Task> taskSet = user.getTasks();
         taskSet.add(task);
         this.userDao.update(user);
-        task.setUser(user);
-        this.taskDao.update(task);
+//        task.setUser(user);
+//        this.taskDao.update(task);
         return "redirect:/manager/developerPage";
+    }
+
+
+    @RequestMapping(value = {"manager/managerPoisk"})
+    public String managerPoisk(Model model) throws DaoException{
+        List<User> userList = this.userDao.getAll();
+        model.addAttribute("userList", userList);
+        return "views/manager/user/managerPoisk";
+    }
+
+    @RequestMapping(value = {"manager/poisk"})
+    public String poisk(@RequestParam("last_name") String last_name, @RequestParam("first_name") String first_name, Model model) throws DaoException{
+        List<User> userList = this.userDao.getDeveloperLastFist(last_name,first_name);
+        model.addAttribute("userList",userList);
+        return "views/manager/user/managerUserPoisk";
+    }
+
+    //----------------Comment
+
+    @RequestMapping(value = {"manager/managerDeleteComment{idComment}/{idTask}"})
+    public String managerDeleteTask(@PathVariable("idComment") Long idComment, @PathVariable("idTask") Long idTask) throws DaoException {
+        Comment comment = this.commentDao.getById(idComment);
+        this.commentDao.remove(comment);
+        return "redirect:/manager/TaskGetBy/" + idTask + "";
+    }
+
+    @RequestMapping(value = {"manager/managerUpdateComment{idComment}Page/{idTask}"})
+    public String managerUpdateCommentPage(@PathVariable("idComment") Long idComment,@PathVariable("idTask") Long idTask, Model model) throws DaoException{
+        Comment comment = this.commentDao.getById(idComment);
+        model.addAttribute("comment", comment);
+        Long id = idTask;
+        model.addAttribute("idTask",id);
+        return "views/manager/comment/managerUpdateComment";
+    }
+
+    @RequestMapping(value = {"manager/managerUpdateComment{idTask}"}, method = RequestMethod.POST)
+    public String managerUpdateComment(@ModelAttribute("comment") Comment comment,@PathVariable("idTask") Long idTask) throws DaoException{
+        Task task = this.taskDao.getById(idTask);
+        comment.setTask(task);
+        comment.setUser(task.getUser());
+        this.commentDao.update(comment);
+        return "redirect:/manager/TaskGetBy/" + idTask + "";
+    }
+
+    @RequestMapping(value = {"manager/managerUpdateTask{idTask}Status"})
+    public String managerUpdateTaskStatus(@PathVariable("idTask") Long idTask, Model model) throws DaoException{
+        Task task = this.taskDao.getById(idTask);
+        model.addAttribute("task", task);
+        return "views/manager/task/managerUpdateTaskStatus";
+    }
+
+    @RequestMapping(value = {"manager/managerUpdateTaskStatus{idTask}"})
+    public String managerUpdateTaskStatus(@ModelAttribute("task") Task task,@PathVariable("idTask") Long idTask) throws DaoException {
+        Task task1 = this.taskDao.getById(idTask);
+        task.setComments(task1.getComments());
+        task.setUser(task1.getUser());
+        this.taskDao.update(task);
+        return "redirect:/manager/TaskGetBy/" + task.getId() + "";
     }
 }

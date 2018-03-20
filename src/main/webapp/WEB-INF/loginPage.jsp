@@ -27,11 +27,12 @@
 <security:authorize access="isAnonymous()">
     Login as <a href="/developerPage">Developer</a> or <a href="/managerPage">Manager</a>
 </security:authorize>
+
 <security:authorize access="isAuthenticated()">
     <security:authorize access="hasRole('DEVELOPER')">
         <a href="/developerPage">Developer Profile</a>
     </security:authorize>
-    <security:authorize access="hasRole('MANAJER')">
+    <security:authorize access="hasRole('MANAGER')">
         <a href="/managerPage">Manager Profile</a>
     </security:authorize>
     <a href="/logoutNew">Logout</a>

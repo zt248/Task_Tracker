@@ -21,29 +21,30 @@
         </tr>
         <tr>
             <td><form:textarea path="description"/></td>
-        </tr><tr>
+        </tr>
+        <tr>
             <td>Статус</td>
         </tr>
         <tr>
             <td>
                 <form:select path="status">
-                <form:option value="waiting"/>
-                <form:option value="implementation"/>
-                <form:option value="verifying"/>
-                <form:option value="releasing"/>
-            </form:select>
+                    <form:option value="NONE" label="--- Select ---"/>
+                    <form:option value="waiting"/>
+                    <form:option value="implementation"/>
+                    <form:option value="verifying"/>
+                    <form:option value="releasing"/>
+                </form:select>
             </td>
         </tr>
         <tr>
-            <td colspan="2" align="center"><input type="submit"  value="Save"></td>
+            <td colspan="2" align="center"><input type="submit" value="Save"></td>
         </tr>
     </table>
 </form:form>
 
 
-<a href="/">Home</a>
 <br>
-<a href="/manager/taskPage">Back</a>
+<a href="/manager/projectGetBy/${projectTask.id}">Back</a>
 <br>
 </body>
 </html>

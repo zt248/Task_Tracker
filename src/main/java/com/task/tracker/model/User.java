@@ -36,12 +36,9 @@ public class User implements Serializable {
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "users")
     Set<Project> projects;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
     Set<Task> tasks;
 
-
-//    @ManyToOne(cascade = CascadeType.ALL)
-//    Role role;
 
 
     public User() {

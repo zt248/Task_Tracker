@@ -18,6 +18,10 @@ public interface UserDao {
 
     User getById(Long id) throws DaoException;
 
+    List<User> developerGetAllProject(String email) throws DaoException;
+
+    List<User> getDeveloperLastFist(String firstName, String lastName) throws DaoException;
+
     //update
     void update(User user) throws DaoException;
 

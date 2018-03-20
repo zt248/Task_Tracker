@@ -36,6 +36,14 @@ public class TaskDaoImpl implements TaskDao {
     }
 
     @Override
+    public List<Task> getProjectTask(Long id) throws DaoException {
+        Session session = this.sessionFactory.getCurrentSession();
+        List<Task> taskList = session.createQuery("from Task where project_id = '" + id + "'").list();
+        return taskList;
+    }
+
+
+    @Override
     public Task getById(Long id) throws DaoException {
         Session session = this.sessionFactory.getCurrentSession();
         Task task = session.get(Task.class, new Long(id));

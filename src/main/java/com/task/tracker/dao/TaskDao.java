@@ -14,6 +14,8 @@ public interface TaskDao {
     //read
     List<Task> getAll() throws DaoException;
 
+    List<Task> getProjectTask(Long id) throws DaoException;
+
     Task getById(Long id) throws DaoException;
 
     //update

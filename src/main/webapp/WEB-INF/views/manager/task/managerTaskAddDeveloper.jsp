@@ -15,7 +15,6 @@
     <tr>
         <td>${developer.lastName}</td>
         <td>${developer.firstName}</td>
-        <%--<td><a href="<c:url value="/manager/developer${developer.id}UpTask"/> "><button>Добавить</button></a> </td>--%>
         <td><a href="<c:url value="/manager/developer${developer.id}UpTask${task.id}"/> "><button>Добавить</button></a> </td>
     </tr>
     </form:forEach>

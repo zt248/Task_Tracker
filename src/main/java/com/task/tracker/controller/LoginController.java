@@ -2,6 +2,7 @@ package com.task.tracker.controller;
 
 import com.task.tracker.controller.validator.EmailValidator;
 import com.task.tracker.dao.DaoException;
+import com.task.tracker.dao.ProjectDao;
 import com.task.tracker.dao.UserDao;
 import com.task.tracker.model.User;
 import com.task.tracker.model.VerificationToken;
@@ -24,6 +25,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.security.Principal;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.UUID;
@@ -33,6 +35,9 @@ public class LoginController {
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private ProjectDao projectDao;
 
     @Autowired
     private IUserService userService;
@@ -150,13 +155,19 @@ public class LoginController {
     }
 
 
-    @RequestMapping(value = {"/managerPage"}, method = RequestMethod.GET)
-    public ModelAndView managerPage() {
-        ModelAndView model = new ModelAndView();
-        model.setViewName("views/manager/managerPage");
-        return model;
-    }
+//    @RequestMapping(value = {"/managerPage"}, method = RequestMethod.GET)
+//    public ModelAndView managerPage() {
+//        ModelAndView model = new ModelAndView();
+//        model.setViewName("views/manager/managerPage");
+//        return model;
+//    }
 
+
+    @RequestMapping(value = {"/managerPage"})
+    public String managerPage(Model model) throws DaoException {
+        model.addAttribute("projectList", this.projectDao.getAll());
+        return "views/manager/managerPage";
+    }
 
     @RequestMapping(value="/logoutNew", method = RequestMethod.GET)
     public String logoutPage (HttpServletRequest request, HttpServletResponse response) {

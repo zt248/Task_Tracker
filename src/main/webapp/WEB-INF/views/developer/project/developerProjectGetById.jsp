@@ -6,15 +6,17 @@
     <title>Project</title>
 </head>
 <body>
-<table cellspacing="2" border="1" cellpadding="5" width="300">
+<table cellspacing="2" border="1" cellpadding="5" width="600">
     <thead>
     <tr>
-        <th>Название таска</th>
+        <th>nameTask</th>
+        <th>description</th>
+        <th>Status</th>
     <tr>
         <c:forEach var="task" items="${taskList}">
-        <td><a href="<c:url value="/manager/TaskGetBy/${task.id}" /> "/> ${task.nameTask}</td>
-
-        <td><a href="<c:url value="/manager/taskAddDeveloper/${task.id}/${projectById.id}"/>"><button>Назначить developer</button></a></td>
+        <td>${task.nameTask}</td>
+        <td>${task.description}</td>
+        <td>${task.status}</td>
     </tr>
     </c:forEach>
     </tr>
@@ -23,14 +25,16 @@
 </table>
 <br>
 
-<a href="<c:url value="/manager/taskNew/${projectById.id}"/>"><button>Новый таск</button></a>
-<br>
-<br>
-<a href="<c:url value="/manager/developerAddProject/${projectById.id}"/>"><button>Новый Developer</button></a>
+<a href="<c:url value="/manager/taskNew/${projectById.id}"/>">
+    <button>Новый таск</button>
+</a>
+<a href="<c:url value="/manager/developerAddProject/${projectById.id}"/>">
+    <button>Новый Developer</button>
+</a>
 
 <br>
 <br>
-<a href="/managerPage">Back</a>
+<a href="/manager/projectPage">Back</a>
 <br>
 <%--<form:select path="project" itemValue="${project.id}" itemLabel="${project.name}">--%>
 <%--<form:option value="NONE" label="--- Select ---"/>--%>

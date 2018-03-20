@@ -24,11 +24,9 @@
     </thead>
 
 </table>
-<a href="/">Home</a>
 <br>
-<a href="/managerPage">Back</a>
+<a href="/manager/projectGetBy/${project.id}">Back</a>
 <br>
-<%--<a href="/manager/projectNew">Create</a>--%>
 </body>
 </html>
 </body>

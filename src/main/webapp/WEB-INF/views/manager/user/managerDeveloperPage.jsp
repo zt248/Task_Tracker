@@ -18,12 +18,18 @@
     <tr>
         <td>${developer.lastName}</td>
         <td>${developer.firstName}</td>
-        <form:forEach items="${developer.projects}" var="developerProject">
-            <td>${developerProject.name}</td>
-        </form:forEach>
+        <td>
+            <form:forEach items="${developer.projects}" var="developerProject">
+                ${developerProject.name}
+                <br>
+            </form:forEach>
+        </td>
+        <td>
         <form:forEach items="${developer.tasks}" var="developerTast">
-            <td>${developerTast.nameTask}</td>
+            ${developerTast.nameTask}
+            <br>
         </form:forEach>
+        </td>
     </tr>
     </form:forEach>
     </tr>
