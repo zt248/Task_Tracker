@@ -96,9 +96,7 @@ public class ManagerController {
         return "redirect:/manager/TaskGetBy/" + idTask + "";
     }
 
-    //update
 
-    //delete
     @RequestMapping(value = {"/manager/projectDelete{id}"})
     public String projectDeleteById(@PathVariable("id") Long id) throws DaoException {
         Project project = projectDao.getById(id);
@@ -116,10 +114,8 @@ public class ManagerController {
         return "views/manager/task/managerTaskPage";
     }
 
-    //readById
 
 
-    //create
     @RequestMapping(value = {"manager/taskNew/{id}"})
     public String taskNew(@PathVariable("id") Long id, Model model) throws DaoException {
         model.addAttribute("task", new Task());
@@ -135,9 +131,7 @@ public class ManagerController {
         return "redirect:/manager/taskPage";
     }
 
-    //update
 
-    //delete
     @RequestMapping(value = {"manager/taskDelete{id}"})
     public String taskDeleteById(@PathVariable("id") Long id) throws DaoException {
         Task task = this.taskDao.getById(id);

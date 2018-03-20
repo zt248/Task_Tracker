@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -147,20 +148,13 @@ public class LoginController {
 
 
 
-    @RequestMapping(value = {"/developerPage"}, method = RequestMethod.GET)
-    public ModelAndView developerPage() {
-        ModelAndView model = new ModelAndView();
-        model.setViewName("views/developer/developerPage");
-        return model;
+
+    @RequestMapping(value = {"/developerPage"})
+    public String developerPage(Model model, Principal principal) throws DaoException {
+        List<User> userList = this.userDao.developerGetAllProject(principal.getName());
+        model.addAttribute("userList", userList);
+        return "views/developer/developerPage";
     }
-
-
-//    @RequestMapping(value = {"/managerPage"}, method = RequestMethod.GET)
-//    public ModelAndView managerPage() {
-//        ModelAndView model = new ModelAndView();
-//        model.setViewName("views/manager/managerPage");
-//        return model;
-//    }
 
 
     @RequestMapping(value = {"/managerPage"})
